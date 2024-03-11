@@ -79,6 +79,8 @@ class SerialReader(QThread):
     def run(self):
         while True:
             data = self.serial.readline().decode('utf-8').strip()
+            if data.startswith == "D,s,5,RC":
+                self._add_to_terminal('Управление с пульта')
             self.receive_data_signal.emit(data)
 
 
@@ -201,6 +203,7 @@ class Actions(TerminalViewer):
     def mnl_mode(self):
         if self.serial:
             self.mode = ControlMode.MANUAL
+            self._add_to_terminal('Ручной режим')
         else:
             print('Порт не доступен')
 
@@ -208,6 +211,7 @@ class Actions(TerminalViewer):
         if self.serial:
             self.serial.write(b'D,s,5,RC,*,\r\n')
             self._add_to_terminal('D,s,5,RC,*,')
+            self._add_to_terminal('Дистанционный режим')
             self.mode = ControlMode.REMOTE
         else:
             print('Порт не доступен')
@@ -297,6 +301,7 @@ class PowerEngineLine(AutoTelemetryGetter):
 class ManualKeysControl(PowerEngineLine):
     def __init__(self):
         super().__init__()
+        self._add_to_terminal('Ручной режим')
 
     def emit_server_signal(self, cmds_character):
         cmd = cmds_character + str(self.pwr_mnl)

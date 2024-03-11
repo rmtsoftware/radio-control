@@ -2,8 +2,6 @@
 
 sudo chmod 766 /dev/ttyUSB0
 
-123456
-
 # Активируйте виртуальное окружение
 source venv/bin/activate
 
